@@ -1,5 +1,8 @@
 import datetime #import library datetime
 import pandas as pd #import library pandas
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
 
 
 
@@ -56,4 +59,18 @@ print("="*60)
 print(data_frame.to_string(index=False))#print the table without index
 
 data_frame.to_csv("BMI_data.csv",index=False)# storing the table to csv file
+
+color_map={"Underweight":"yellow","Normalweight":"green","Overweight":"red","Obese":"orange"}
+colors=data_frame["Status"].map(color_map)
+plt.figure(figsize=(10,6))
+plt.bar(data_frame["Name"],data_frame["BMI"],color=colors)
+plt.title("BMI OF USERS")
+plt.xlabel("NAME")
+plt.ylabel("BMI")
+
+patches = [mpatches.Patch(color=color_map[key], label=key) for key in color_map]
+plt.legend(handles=patches, title="BMI Status")
+
+plt.show()
+
 
