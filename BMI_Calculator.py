@@ -1,7 +1,7 @@
 import datetime #import library datetime
 import pandas as pd #import library pandas
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
+from matplotlib.patches import Patch
 
 
 
@@ -46,7 +46,7 @@ for i in range(0,number): #loop to take user input for each entry
     bmi,category=bmi_calculator(height,weight)
     users_dict={"Name":name,"Age":age,"Height(m)":height,"Weight(Kg)":weight,"BMI":round(bmi,2),"Status":category}
     users_data.append(users_dict)#append the user data to the list
-print(f"\n\DATA")
+print(f"\n\nDICTIONARY")
 print("="*60)
 print(users_data)
 
@@ -59,18 +59,36 @@ print("="*60)
 print(data_frame.to_string(index=False))#print the table without index
 
 data_frame.to_csv("BMI_data.csv",index=False)# storing the table to csv file
+# Assign colors based on BMI category
+colors = []
+for status in data_frame['Status']:
+    if status == "Underweight":
+        colors.append('#ff9999')  # red-ish
+    elif status == "Normalweight":
+        colors.append('#66b3ff')  # blue
+    elif status == "Overweight":
+        colors.append('#ffcc99')  # orange
+    else:  # Obese
+        colors.append('#99ff99')  # green
 
-color_map={"Underweight":"yellow","Normalweight":"green","Overweight":"red","Obese":"orange"}
-colors=data_frame["Status"].map(color_map)
-plt.figure(figsize=(10,6))
-plt.bar(data_frame["Name"],data_frame["BMI"],color=colors)
-plt.title("BMI OF USERS")
-plt.xlabel("NAME")
-plt.ylabel("BMI")
+# Plot BMI bar chart
+plt.figure(figsize=(10,5))
+bars = plt.bar(data_frame['Name'], data_frame['BMI'], color=colors)
+plt.xlabel('Name')
+plt.ylabel('BMI')
+plt.title('BMI of Users')
+plt.xticks(rotation=45)
+plt.ylim(0, max(data_frame['BMI']) + 5)
 
-patches = [mpatches.Patch(color=color_map[key], label=key) for key in color_map]
-plt.legend(handles=patches, title="BMI Status")
+# Create legend manually
 
+legend_elements = [
+    Patch(facecolor='#ff9999', label='Underweight'),
+    Patch(facecolor='#66b3ff', label='Normalweight'),
+    Patch(facecolor='#ffcc99', label='Overweight'),
+    Patch(facecolor='#99ff99', label='Obese')
+]
+plt.legend(handles=legend_elements, title='BMI Category')
 plt.show()
 
 
